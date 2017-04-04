@@ -1,4 +1,4 @@
-package com.chen.fulleditnote.app;
+package com.chen.fulleditnote.app.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -1,4 +1,4 @@
-package com.chen.fulleditnote.app;
+package com.chen.fulleditnote.app.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import app.chen.com.fulleditnote.R;
+import com.chen.fulleditnote.app.view.ColorPickerDialog;
+import com.chen.fulleditnote.app.view.PictureAndTextEditorView;
 import com.chen.fulleditnote.util.UriUtils;
 
 /**

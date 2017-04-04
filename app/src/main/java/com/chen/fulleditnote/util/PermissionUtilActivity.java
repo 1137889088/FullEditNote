@@ -13,7 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-import com.chen.fulleditnote.app.MainActivity;
+import com.chen.fulleditnote.app.activity.MainActivity;
 import app.chen.com.fulleditnote.R;
 
 /**
