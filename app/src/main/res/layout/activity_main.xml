@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#ffffff"
+              android:orientation="vertical">
+    <com.chen.fulleditnote.app.PictureAndTextEditorView
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:gravity="start"
+            android:hint="132456"
+            android:textColor="@color/colorBlack"
+    />
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <Button
+                android:id="@+id/btnSetFontColor"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="字体颜色"
+                android:layout_alignParentBottom="true"/>
+        <Button
+                android:id="@+id/btnSetBackColor"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="背景颜色"
+                android:layout_alignParentBottom="true"/>
+        <Button
+                android:id="@+id/btnAddPic"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="插入图片"
+                android:layout_alignParentBottom="true"/>
+        <Button
+                android:id="@+id/btnSelectColor"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="选择颜色"
+                android:layout_alignParentBottom="true"/>
+    </LinearLayout>
+
+
+</LinearLayout>
