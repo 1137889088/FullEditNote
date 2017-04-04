@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="#ffffff"
               android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="38dp"
+                  android:layout_weight="0.01">
+        <TextView android:layout_width="wrap_content"
+                  android:layout_weight="0.16"
+                  android:text="标题:"
+                  android:textColor="@color/colorBlack"
+                  android:textSize="30sp"
+                  android:layout_height="match_parent" android:textAllCaps="true"/>
+        <EditText android:layout_width="wrap_content"
+                  android:layout_weight="1"
+                  android:layout_height="match_parent"/>
+    </LinearLayout>
     <com.chen.fulleditnote.app.PictureAndTextEditorView
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
@@ -20,19 +34,19 @@
         <Button
                 android:id="@+id/btnSetFontColor"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="match_parent"
                 android:text="字体颜色"
                 android:layout_alignParentBottom="true"/>
         <Button
                 android:id="@+id/btnSetBackColor"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="match_parent"
                 android:text="背景颜色"
                 android:layout_alignParentBottom="true"/>
         <Button
                 android:id="@+id/btnAddPic"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="match_parent"
                 android:text="图片"
                 android:layout_alignParentBottom="true"/>
         <Button
@@ -53,6 +67,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
+                android:textColor="@color/colorBlack"
                 android:id="@+id/etFontSize"/>
         <Button android:layout_width="wrap_content"
                 android:id="@+id/btnSetStrikeThrough"
@@ -61,7 +76,7 @@
         <Button android:layout_width="wrap_content"
                 android:id="@+id/btnSetUnderline"
                 android:text="下划线"
-                android:layout_height="match_parent" android:layout_weight="0.07"/>
+                android:layout_height="wrap_content" android:layout_weight="0.07"/>
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:weightSum="1">
@@ -80,6 +95,10 @@
         <Button android:layout_width="wrap_content"
                 android:id="@+id/btnSetStyleITALIC"
                 android:text="斜体"
+                android:layout_height="wrap_content"/>
+        <Button android:layout_width="wrap_content"
+                android:id="@+id/btnSave"
+                android:text="保存"
                 android:layout_height="match_parent"/>
     </LinearLayout>
 </LinearLayout>

@@ -5,10 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
+import android.text.*;
 import android.text.style.*;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -33,11 +30,63 @@ public class PictureAndTextEditorView extends EditText {
     BackgroundColorSpan backColorSpan = new BackgroundColorSpan(Color.parseColor("#AC00FF30"));//字体背景色
     RelativeSizeSpan fontSizeSpan = new RelativeSizeSpan(1.2f);//字体大小
 
-
-    public static final String mBitmapTag = "☆";//
-    public static final String fontColorTag = "▷";
     private String mNewLineTag = "\n";//换行符
 
+    public static final String superscriptSpanTag = "<span:0:L>";//上标
+    public static final String mBitmapTag = "<span:1:L>";//图片
+    public static final String frontColorSpanTag = "<span:2:L:C>";//字颜色
+    public static final String backColorSpanTag = "<span:3:L:C>";//背景
+    public static final String styleSpanBTag = "<span:4:L:B>";//粗体
+    public static final String styleSpanITag = "<span:5:L:I>";//斜体
+    public static final String fontSizeSpanTag = "<span:6:L:C>";//字体大小
+    public static final String strikethroughSpanTag = "<span:7:L>";//删除线
+    public static final String underlineSpanTag = "<span:8:L>";//下划线
+    public static final String subscriptSpanTag = "<span:9:L>";//下标
+
+    private String getSuperscriptSpanTag(int longth) {
+        return superscriptSpanTag.replace("L", "" + longth);
+    }
+
+    private static String getmBitmapTag(int longth) {
+        return mBitmapTag.replace("L", "" + longth);
+    }
+
+    private String getFrontColorSpanTag(int longth, int color) {
+        return frontColorSpanTag.replace("L", "" + longth).replace("C", "" + color);
+    }
+
+    public String getBackColorSpanTag(int longth, int color) {
+        return backColorSpanTag.replace("L", "" + longth).replace("C", "" + color);
+    }
+
+    public String getStyleSpanBTag(int longth) {
+        return styleSpanBTag.replace("L", "" + longth);
+    }
+
+    public String getStyleSpanITag(int longth) {
+        return styleSpanITag.replace("L", "" + longth);
+    }
+
+    public static String getFontSizeSpanTag(int longth, float size) {
+        return fontSizeSpanTag.replace("L", "" + longth).replace("C", "" + size);
+    }
+
+    public static String getStrikethroughSpanTag(int longth) {
+        return strikethroughSpanTag.replace("L", "" + longth);
+    }
+
+    public static String getUnderlineSpanTag(int longth) {
+        return underlineSpanTag.replace("L", "" + longth);
+    }
+
+    public static String getSubscriptSpanTag(int longth) {
+        return subscriptSpanTag.replace("L", "" + longth);
+    }
+
+
+    public Context getmContext() {
+        return mContext;
+    }
 
     /**
      * 初始化
@@ -248,6 +297,7 @@ public class PictureAndTextEditorView extends EditText {
      * @param text 需要修改的文本
      * @return 封装好的spanString
      */
+
     private SpannableString setSubscriptSpanString(String text) {
         int index = getSelectionStart(); // 获取光标所在位置
         // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
@@ -276,7 +326,7 @@ public class PictureAndTextEditorView extends EditText {
         // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
         SpannableString spannableString = new SpannableString(text);
         // 用ImageSpan对象替换你指定的字符串
-        StyleSpan styleSpan_B  = new StyleSpan(Typeface.BOLD);
+        StyleSpan styleSpan_B = new StyleSpan(Typeface.BOLD);
         spannableString.setSpan(styleSpan_B, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 将选择的图片追加到EditText中光标所在位置
         if (index < 0 || index >= edit_text.length()) {
@@ -402,7 +452,7 @@ public class PictureAndTextEditorView extends EditText {
         }
         String content = getText().toString().replaceAll(mNewLineTag, "");
         if (content.length() > 0 && content.contains(mBitmapTag)) {
-            String[] split = content.split("☆");
+            String[] split = content.split(mBitmapTag);
             mContentList.clear();
             for (String str : split) {
                 mContentList.add(str);
@@ -564,6 +614,7 @@ public class PictureAndTextEditorView extends EditText {
         }
         setUnderlineSpanString(selectText.toString());
     }
+
     public void setSuperscript() {
         int start = getSelectionStart();
         int end = getSelectionEnd();
@@ -585,7 +636,8 @@ public class PictureAndTextEditorView extends EditText {
         }
         setSubscriptSpanString(selectText.toString());
     }
-    public void setStyleBOLD  () {
+
+    public void setStyleBOLD() {
         int start = getSelectionStart();
         int end = getSelectionEnd();
         CharSequence selectText = getText().subSequence(start, end);
@@ -607,4 +659,40 @@ public class PictureAndTextEditorView extends EditText {
         setStyleITALICSpanString(selectText.toString());
     }
 
+    public String save() {
+        Editable text = getText();
+        ParcelableSpan[] mSpans = text.getSpans(0, length(), ParcelableSpan.class);
+        for (ParcelableSpan mSpan : mSpans) {
+            int start = text.getSpanStart(mSpan);
+            int end = text.getSpanEnd(mSpan);
+            int longth = end - start;
+            String tag = "";
+            if (mSpan instanceof StyleSpan) {
+                if (((StyleSpan) mSpan).getStyle() == Typeface.BOLD) {
+                    tag = getStyleSpanBTag(longth);
+                } else {
+                    tag = getStyleSpanITag(longth);
+                }
+            } else if (mSpan instanceof ForegroundColorSpan) {
+                tag = getFrontColorSpanTag(longth, ((ForegroundColorSpan) mSpan).getForegroundColor());
+            } else if (mSpan instanceof BackgroundColorSpan) {
+                tag = getBackColorSpanTag(longth, ((BackgroundColorSpan) mSpan).getBackgroundColor());
+            } else if (mSpan instanceof SuperscriptSpan) {
+                tag = getSuperscriptSpanTag(longth);
+            } else if (mSpan instanceof SubscriptSpan) {
+                tag = getSubscriptSpanTag(longth);
+            } else if (mSpan instanceof StrikethroughSpan) {
+                tag = getStrikethroughSpanTag(longth);
+            } else if (mSpan instanceof RelativeSizeSpan) {
+                tag = getFontSizeSpanTag(longth, ((RelativeSizeSpan) mSpan).getSizeChange());
+            } else if (mSpan instanceof UnderlineSpan) {
+                tag = getUnderlineSpanTag(longth);
+            }else {
+                tag = mSpan.toString();
+            }
+            text.insert(start,tag);
+        }
+        System.out.println(text);
+        return text.toString();
+    }
 }

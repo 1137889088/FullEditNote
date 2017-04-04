@@ -3,7 +3,6 @@ package com.chen.fulleditnote.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -13,9 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import app.chen.com.fulleditnote.R;
 import com.chen.fulleditnote.util.UriUtils;
-import org.sil.palaso.Graphite;
-
-import static org.sil.palaso.Graphite.loadGraphite;
 
 /**
  * Created by chen on 17/4/3.
@@ -39,6 +35,7 @@ public class MainActivity extends Activity {
     private Button btnSetSubscript;//设置下标
     private Button btnSetStyleBOLD;//设置粗体
     private Button btnSetStyleITALIC;//设置斜体
+    private Button btnSave;//设置斜体
 
     private TextView tvFontSize;//字体大小选择
     private EditText etFontSize;//字体大小输入
@@ -47,14 +44,22 @@ public class MainActivity extends Activity {
        /* Intent intent = new Intent();
         intent.setClass(this, PermissionUtilActivity.class);
         startActivity(intent);*/
-       //加载Grpahite引擎
+      /* //加载Grpahite引擎
         loadGraphite();
         //获取蒙文字体
-        Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
+        Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
        /* tvFontSize = (TextView) findViewById(R.id.tvFontSize);
         tvFontSize.setText("字体大小:");*/
+
+        btnSave = (Button) findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditText.save();
+            }
+        });
 
         btnSetSuperscript = (Button) findViewById(R.id.btnSetSuperscript);
         btnSetSuperscript.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +192,7 @@ public class MainActivity extends Activity {
         mEditText = (PictureAndTextEditorView) findViewById(R.id.edit_text);
         btnAddPic = (Button) findViewById(R.id.btnAddPic);
 
-        mEditText.setTypeface(mtfp);
+        //mEditText.setTypeface(mtfp);
         /**
          * 改变字体颜色按钮监听
          */
@@ -236,7 +241,6 @@ public class MainActivity extends Activity {
                         });
                 colorDialog.setCanceledOnTouchOutside(true);// 设置点击Dialog外部任意区域关闭Dialo
                 colorDialog.show();
-                // 橡皮擦(擦出)
             }
         });
     }
