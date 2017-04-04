@@ -4,13 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
+import android.text.style.*;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -27,12 +26,18 @@ import java.util.List;
 public class PictureAndTextEditorView extends EditText {
     private Context mContext;//上下文对象
     private List<String> mContentList;//列表
+    Editable edit_text = getEditableText();//text
+
+    //字体样式span
     ForegroundColorSpan frontColorSpan = new ForegroundColorSpan(Color.RED);//字体颜色
     BackgroundColorSpan backColorSpan = new BackgroundColorSpan(Color.parseColor("#AC00FF30"));//字体背景色
+    RelativeSizeSpan fontSizeSpan = new RelativeSizeSpan(1.2f);//字体大小
+
+
     public static final String mBitmapTag = "☆";//
     public static final String fontColorTag = "▷";
     private String mNewLineTag = "\n";//换行符
-    Editable edit_text = getEditableText();//text
+
 
     /**
      * 初始化
@@ -100,6 +105,41 @@ public class PictureAndTextEditorView extends EditText {
         }
     }
 
+    /**
+     * 为插入的span指定字体背景颜色
+     *
+     * @param color 要设置的颜色
+     */
+    public void setBackColorSpan(int color) {
+        try {
+            backColorSpan = new BackgroundColorSpan(color);
+        } catch (Exception e) {
+            Toast.makeText(this.mContext, "请正确的选择颜色", Toast.LENGTH_SHORT);
+        }
+    }
+
+    /**
+     * 为插入的span指定字体背景颜色
+     *
+     * @param color 要设置的颜色
+     */
+    public void setFrontColorSpan(int color) {
+        try {
+            frontColorSpan = new ForegroundColorSpan(color);
+        } catch (Exception e) {
+            Toast.makeText(this.mContext, "请正确的选择颜色", Toast.LENGTH_SHORT);
+        }
+    }
+
+    /**
+     * 为插入的span指定字体大小
+     *
+     * @param fontSize 要设置的字体大小
+     */
+    public void setFontSizeSpan(float fontSize) {
+        fontSizeSpan = new RelativeSizeSpan(fontSize);
+    }
+
 
     /**
      * 插入图片
@@ -131,20 +171,168 @@ public class PictureAndTextEditorView extends EditText {
         return spannableString;
     }
 
-
     /**
-     * 为插入的span指定字体颜色
+     * 为字体设置删除线
      *
-     * @param color 要设置的颜色
+     * @param text 需要修改的文本
+     * @return 封装好的spanString
      */
-    public void setFrontColorSpan(int color) {
-        try {
-            frontColorSpan = new ForegroundColorSpan(color);
-        } catch (Exception e) {
-            Toast.makeText(this.mContext, "请正确的选择颜色", Toast.LENGTH_SHORT);
+
+    private SpannableString setStrikethroughSpanString(String text) {
+        int index = getSelectionStart(); // 获取光标所在位置
+        // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
+        SpannableString spannableString = new SpannableString(text);
+        // 用ImageSpan对象替换你指定的字符串
+        StrikethroughSpan strikethroughSpan = new StrikethroughSpan();//删除线
+        spannableString.setSpan(strikethroughSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 将选择的图片追加到EditText中光标所在位置
+        if (index < 0 || index >= edit_text.length()) {
+            edit_text.append(spannableString);
+        } else {
+            edit_text.insert(index, spannableString);
         }
+        edit_text.delete(index + spannableString.length(), index + spannableString.length() * 2);
+        return spannableString;
     }
 
+    /**
+     * 为字体设置下划线
+     *
+     * @param text 需要修改的文本
+     * @return 封装好的spanString
+     */
+    private SpannableString setUnderlineSpanString(String text) {
+        int index = getSelectionStart(); // 获取光标所在位置
+        // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
+        SpannableString spannableString = new SpannableString(text);
+        // 用ImageSpan对象替换你指定的字符串
+        UnderlineSpan underlineSpan = new UnderlineSpan();
+        spannableString.setSpan(underlineSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 将选择的图片追加到EditText中光标所在位置
+        if (index < 0 || index >= edit_text.length()) {
+            edit_text.append(spannableString);
+        } else {
+            edit_text.insert(index, spannableString);
+        }
+        edit_text.delete(index + spannableString.length(), index + spannableString.length() * 2);
+        return spannableString;
+    }
+
+    /**
+     * 为字体设置下划线
+     *
+     * @param text 需要修改的文本
+     * @return 封装好的spanString
+     */
+    private SpannableString setSuperscriptSpanString(String text) {
+        int index = getSelectionStart(); // 获取光标所在位置
+        // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
+        SpannableString spannableString = new SpannableString(text);
+        // 用ImageSpan对象替换你指定的字符串
+        SuperscriptSpan superscriptSpan = new SuperscriptSpan();
+        spannableString.setSpan(superscriptSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 将选择的图片追加到EditText中光标所在位置
+        if (index < 0 || index >= edit_text.length()) {
+            edit_text.append(spannableString);
+        } else {
+            edit_text.insert(index, spannableString);
+        }
+        edit_text.delete(index + spannableString.length(), index + spannableString.length() * 2);
+        return spannableString;
+    }
+
+
+    /**
+     * 为字体设置下标
+     *
+     * @param text 需要修改的文本
+     * @return 封装好的spanString
+     */
+    private SpannableString setSubscriptSpanString(String text) {
+        int index = getSelectionStart(); // 获取光标所在位置
+        // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
+        SpannableString spannableString = new SpannableString(text);
+        // 用ImageSpan对象替换你指定的字符串
+        SubscriptSpan subscriptSpan = new SubscriptSpan();
+        spannableString.setSpan(subscriptSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 将选择的图片追加到EditText中光标所在位置
+        if (index < 0 || index >= edit_text.length()) {
+            edit_text.append(spannableString);
+        } else {
+            edit_text.insert(index, spannableString);
+        }
+        edit_text.delete(index + spannableString.length(), index + spannableString.length() * 2);
+        return spannableString;
+    }
+
+    /**
+     * 为字体设置粗体
+     *
+     * @param text 需要修改的文本
+     * @return 封装好的spanString
+     */
+    private SpannableString setStyleBOLDSpanString(String text) {
+        int index = getSelectionStart(); // 获取光标所在位置
+        // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
+        SpannableString spannableString = new SpannableString(text);
+        // 用ImageSpan对象替换你指定的字符串
+        StyleSpan styleSpan_B  = new StyleSpan(Typeface.BOLD);
+        spannableString.setSpan(styleSpan_B, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 将选择的图片追加到EditText中光标所在位置
+        if (index < 0 || index >= edit_text.length()) {
+            edit_text.append(spannableString);
+        } else {
+            edit_text.insert(index, spannableString);
+        }
+        edit_text.delete(index + spannableString.length(), index + spannableString.length() * 2);
+        return spannableString;
+    }
+
+
+    /**
+     * 为字体设置粗体
+     *
+     * @param text 需要修改的文本
+     * @return 封装好的spanString
+     */
+    private SpannableString setStyleITALICSpanString(String text) {
+        int index = getSelectionStart(); // 获取光标所在位置
+        // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
+        SpannableString spannableString = new SpannableString(text);
+        // 用ImageSpan对象替换你指定的字符串
+        StyleSpan styleSpan_I = new StyleSpan(Typeface.ITALIC);
+        spannableString.setSpan(styleSpan_I, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 将选择的图片追加到EditText中光标所在位置
+        if (index < 0 || index >= edit_text.length()) {
+            edit_text.append(spannableString);
+        } else {
+            edit_text.insert(index, spannableString);
+        }
+        edit_text.delete(index + spannableString.length(), index + spannableString.length() * 2);
+        return spannableString;
+    }
+
+    /**
+     * 修改字体大小
+     *
+     * @param text 需要修改的文本
+     * @return 封装好的spanString
+     */
+    private SpannableString changeFontSizeSpanString(String text) {
+        int index = getSelectionStart(); // 获取光标所在位置
+        // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
+        SpannableString spannableString = new SpannableString(text);
+        // 用ImageSpan对象替换你指定的字符串
+        spannableString.setSpan(fontSizeSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 将选择的图片追加到EditText中光标所在位置
+        if (index < 0 || index >= edit_text.length()) {
+            edit_text.append(spannableString);
+        } else {
+            edit_text.insert(index, spannableString);
+        }
+        edit_text.delete(index + spannableString.length(), index + spannableString.length() * 2);
+        return spannableString;
+    }
 
     /**
      * 修改字体颜色
@@ -169,18 +357,7 @@ public class PictureAndTextEditorView extends EditText {
         return spannableString;
     }
 
-    /**
-     * 为插入的span指定字体背景颜色
-     *
-     * @param color 要设置的颜色
-     */
-    public void setBackColorSpan(int color) {
-        try {
-            backColorSpan = new BackgroundColorSpan(color);
-        } catch (Exception e) {
-            Toast.makeText(this.mContext, "请正确的选择颜色", Toast.LENGTH_SHORT);
-        }
-    }
+
     /**
      * 修改字体的背景色
      *
@@ -338,7 +515,7 @@ public class PictureAndTextEditorView extends EditText {
         int end = getSelectionEnd();
         CharSequence selectText = getText().subSequence(start, end);
         if ((end - start) <= 0) {
-            Toast.makeText(this.mContext,"请选择更改的文本",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
             return;
         }
         insertFrontColorSpanString(selectText.toString());
@@ -349,9 +526,85 @@ public class PictureAndTextEditorView extends EditText {
         int end = getSelectionEnd();
         CharSequence selectText = getText().subSequence(start, end);
         if ((end - start) <= 0) {
-            Toast.makeText(this.mContext,"请选择更改的文本",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
             return;
         }
         insertBackgroundColorString(selectText.toString());
     }
+
+    public void setFontSize() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        CharSequence selectText = getText().subSequence(start, end);
+        if ((end - start) <= 0) {
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        changeFontSizeSpanString(selectText.toString());
+    }
+
+    public void setStrikethrough() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        CharSequence selectText = getText().subSequence(start, end);
+        if ((end - start) <= 0) {
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        setStrikethroughSpanString(selectText.toString());
+    }
+
+    public void setUnderline() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        CharSequence selectText = getText().subSequence(start, end);
+        if ((end - start) <= 0) {
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        setUnderlineSpanString(selectText.toString());
+    }
+    public void setSuperscript() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        CharSequence selectText = getText().subSequence(start, end);
+        if ((end - start) <= 0) {
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        setSuperscriptSpanString(selectText.toString());
+    }
+
+    public void setSubscript() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        CharSequence selectText = getText().subSequence(start, end);
+        if ((end - start) <= 0) {
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        setSubscriptSpanString(selectText.toString());
+    }
+    public void setStyleBOLD  () {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        CharSequence selectText = getText().subSequence(start, end);
+        if ((end - start) <= 0) {
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        setStyleBOLDSpanString(selectText.toString());
+    }
+
+    public void setStyleITALIC() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        CharSequence selectText = getText().subSequence(start, end);
+        if ((end - start) <= 0) {
+            Toast.makeText(this.mContext, "请选择更改的文本", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        setStyleITALICSpanString(selectText.toString());
+    }
+
 }

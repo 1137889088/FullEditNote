@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
+              xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="#ffffff"
               android:orientation="vertical">
@@ -8,7 +8,7 @@
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.90"
             android:scrollbars="vertical"
             android:scrollbarStyle="outsideOverlay"
             android:gravity="start"
@@ -33,15 +33,53 @@
                 android:id="@+id/btnAddPic"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="插入图片"
+                android:text="图片"
                 android:layout_alignParentBottom="true"/>
         <Button
                 android:id="@+id/btnSelectColor"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="选择颜色"
+                android:text="颜色"
                 android:layout_alignParentBottom="true"/>
     </LinearLayout>
-
-
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:weightSum="1">
+        <Button android:layout_width="wrap_content"
+                android:id="@+id/btnSetFontSize"
+                android:text="字体大小:"
+                android:layout_height="match_parent"/>
+        <EditText
+                android:layout_width="27dp"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:id="@+id/etFontSize"/>
+        <Button android:layout_width="wrap_content"
+                android:id="@+id/btnSetStrikeThrough"
+                android:text="删除线"
+                android:layout_height="match_parent" android:layout_weight="0.07"/>
+        <Button android:layout_width="wrap_content"
+                android:id="@+id/btnSetUnderline"
+                android:text="下划线"
+                android:layout_height="match_parent" android:layout_weight="0.07"/>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:weightSum="1">
+        <Button android:layout_width="wrap_content"
+                android:id="@+id/btnSetSuperscript"
+                android:text="上标"
+                android:layout_height="match_parent"/>
+        <Button android:layout_width="wrap_content"
+                android:id="@+id/btnSetSubscript"
+                android:text="下标"
+                android:layout_height="match_parent"/>
+        <Button android:layout_width="wrap_content"
+                android:id="@+id/btnSetStyleBOLD"
+                android:text="粗体"
+                android:layout_height="match_parent"/>
+        <Button android:layout_width="wrap_content"
+                android:id="@+id/btnSetStyleITALIC"
+                android:text="斜体"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
 </LinearLayout>
