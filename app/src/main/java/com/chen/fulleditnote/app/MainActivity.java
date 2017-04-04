@@ -3,12 +3,16 @@ package com.chen.fulleditnote.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import app.chen.com.fulleditnote.R;
 import com.chen.fulleditnote.util.UriUtils;
+import org.sil.palaso.Graphite;
+
+import static org.sil.palaso.Graphite.loadGraphite;
 
 /**
  * Created by chen on 17/4/3.
@@ -29,14 +33,14 @@ public class MainActivity extends Activity {
        /* Intent intent = new Intent();
         intent.setClass(this, PermissionUtilActivity.class);
         startActivity(intent);*/
-        //loadGraphite();
-        //Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
+        loadGraphite();
+        Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mEditText = (PictureAndTextEditorView) findViewById(R.id.edit_text);
         btnAddPic = (Button) findViewById(R.id.btnAddPic);
 
-        //mEditText.setTypeface(mtfp);
+        mEditText.setTypeface(mtfp);
         /**
          * 改变字体颜色按钮监听
          */

@@ -4,6 +4,10 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+
+set(distribution_DIR ${CMAKE_SOURCE_DIR}/../../../../libs)
+
+
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds it for you.
@@ -18,6 +22,19 @@ add_library( # Sets the name of the library.
              # file are automatically included.
              src/main/cpp/native-lib.cpp
              )
+
+add_library( libgraphite2an
+             SHARED
+             IMPORTED)
+set_target_properties( libgraphite2an
+                       PROPERTIES IMPORTED_LOCATION
+                       ../../../../libs/armeabi-v8a/libgrload2.so )
+
+
+
+
+
+
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because system libraries are included in the search path by
