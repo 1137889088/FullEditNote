@@ -174,7 +174,7 @@ public class MainActivity extends Activity {
                 float fontSize = 1;
                 if(fontSizeText.equals("")||fontSizeText==null){
                     mEditText.setText("1");
-                    mEditText.setFontSizeSpan(fontSize);
+                    mEditText.setFontSize(fontSize);
                 }else{
                     try {
                         fontSize = Float.parseFloat(fontSizeText);
@@ -185,7 +185,7 @@ public class MainActivity extends Activity {
                         fontSize = 1;
                         Toast.makeText(MainActivity.this,"请正确输入数字(大于0)",Toast.LENGTH_SHORT).show();
                     }
-                    mEditText.setFontSizeSpan(fontSize);
+                    mEditText.setFontSize(fontSize);
                 }
                 mEditText.setFontSize();
             }
@@ -237,8 +237,7 @@ public class MainActivity extends Activity {
                         new ColorPickerDialog.OnColorChangedListener() {
                             @Override
                             public void colorChanged(int color) {
-                                mEditText.setFrontColorSpan(color);//将颜色设置到
-                                mEditText.setBackColorSpan(color);
+                                mEditText.setFrontColor(color);//将颜色设置到
                             }
                         });
                 colorDialog.setCanceledOnTouchOutside(true);// 设置点击Dialog外部任意区域关闭Dialo
@@ -263,7 +262,6 @@ public class MainActivity extends Activity {
                         Uri selectedImage = data.getData();
                         String imageurl = UriUtils.getImageAbsolutePath(this, selectedImage);
                         mEditText.insertBitmap(imageurl);
-                        System.out.println("回调结束");
                     }
                 default:
                     break;

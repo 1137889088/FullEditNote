@@ -36,6 +36,8 @@ public class PermissionUtilActivity extends AppCompatActivity {
             if (i != PackageManager.PERMISSION_GRANTED) {
                 // 如果没有授予该权限，就去提示用户请求
                 showDialogTipUserRequestPermission();
+            }else {
+                finish();
             }
         }
     }

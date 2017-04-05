@@ -24,16 +24,15 @@ public class PictureAndTextEditorView extends EditText {
     private Context mContext;//上下文对象
     private List<String> mContentList;//列表
     Editable edit_text = getEditableText();//text
-    int color;
+    int color = Color.BLACK;
+    float fontSize = 1;
     //字体样式span
 
-    BackgroundColorSpan backColorSpan = new BackgroundColorSpan(Color.parseColor("#AC00FF30"));//字体背景色
-    RelativeSizeSpan fontSizeSpan = new RelativeSizeSpan(1.2f);//字体大小
 
     private String mNewLineTag = "\n";//换行符
 
     public static final String superscriptSpanTag = "<span:0:L>";//上标
-    public static final String mBitmapTag = "<span:1:L>";//图片
+    public static final String imgSpanTag = "<span:1>";//图片
     public static final String frontColorSpanTag = "<span:2:L:C>";//字颜色
     public static final String backColorSpanTag = "<span:3:L:C>";//背景
     public static final String styleSpanBTag = "<span:4:L:B>";//粗体
@@ -47,8 +46,8 @@ public class PictureAndTextEditorView extends EditText {
         return superscriptSpanTag.replace("L", "" + longth);
     }
 
-    private static String getmBitmapTag(int longth) {
-        return mBitmapTag.replace("L", "" + longth);
+    private static String getImgSpanTag(int longth,String path) {
+        return imgSpanTag.replace("L", "" + longth).replace("C", "" + path);
     }
 
     private String getFrontColorSpanTag(int longth, int color) {
@@ -140,8 +139,8 @@ public class PictureAndTextEditorView extends EditText {
         //
         if (mContentList.size() > 0) {
             for (String str : mContentList) {
-                if (str.indexOf(mBitmapTag) != -1) {//判断是否是图片地址
-                    String path = str.replace(mBitmapTag, "");//还原地址字符串
+                if (str.indexOf(imgSpanTag) != -1) {//判断是否是图片地址
+                    String path = str.replace(imgSpanTag, "");//还原地址字符串
                     Bitmap bitmap = bitmap = BitmapFactory.decodeFile(path);
                     //插入图片
                     insertBitmap(path, bitmap);
@@ -155,25 +154,13 @@ public class PictureAndTextEditorView extends EditText {
         }
     }
 
-    /**
-     * 为插入的span指定字体背景颜色
-     *
-     * @param color 要设置的颜色
-     */
-    public void setBackColorSpan(int color) {
-        try {
-            backColorSpan = new BackgroundColorSpan(color);
-        } catch (Exception e) {
-            Toast.makeText(this.mContext, "请正确的选择颜色", Toast.LENGTH_SHORT);
-        }
-    }
 
     /**
      * 为插入的span指定字体背景颜色
      *
      * @param color 要设置的颜色
      */
-    public void setFrontColorSpan(int color) {
+    public void setFrontColor(int color) {
         try {
             this.color = color;
         } catch (Exception e) {
@@ -186,8 +173,8 @@ public class PictureAndTextEditorView extends EditText {
      *
      * @param fontSize 要设置的字体大小
      */
-    public void setFontSizeSpan(float fontSize) {
-        fontSizeSpan = new RelativeSizeSpan(fontSize);
+    public void setFontSize(float fontSize) {
+        fontSize = fontSize;
     }
 
    /* private void setOwnedSpan(SpannableString spannableString,int length,ParcelableSpan[] spans){
@@ -226,45 +213,54 @@ public class PictureAndTextEditorView extends EditText {
         }
     }*/
 
-    private void removeSpan(ParcelableSpan own, ParcelableSpan[] spans) {
+    private boolean removeSpan(ParcelableSpan own, ParcelableSpan[] spans) {
+        boolean isExist = false;
         for (ParcelableSpan mSpan : spans) {
-
             if (mSpan instanceof StyleSpan) {
-                if(own instanceof  StyleSpan){
+                if (own instanceof StyleSpan) {
                     if (((StyleSpan) mSpan).getStyle() == ((StyleSpan) own).getStyle()) {
                         getText().removeSpan(mSpan);
+                        isExist = true;
                     }
                 }
             } else if (mSpan instanceof ForegroundColorSpan) {
                 if (own instanceof ForegroundColorSpan) {
                     getText().removeSpan(mSpan);
+                    isExist = true;
                 }
             } else if (mSpan instanceof BackgroundColorSpan) {
                 if (own instanceof BackgroundColorSpan) {
                     getText().removeSpan(mSpan);
+                    isExist = true;
                 }
             } else if (mSpan instanceof SuperscriptSpan) {
                 if (own instanceof SuperscriptSpan) {
                     getText().removeSpan(mSpan);
+                    isExist = true;
                 }
             } else if (mSpan instanceof SubscriptSpan) {
                 if (own instanceof SubscriptSpan) {
                     getText().removeSpan(mSpan);
+                    isExist = true;
                 }
             } else if (mSpan instanceof StrikethroughSpan) {
-                if (own instanceof SuperscriptSpan) {
+                if (own instanceof StrikethroughSpan) {
                     getText().removeSpan(mSpan);
+                    isExist = true;
                 }
             } else if (mSpan instanceof RelativeSizeSpan) {
                 if (own instanceof RelativeSizeSpan) {
                     getText().removeSpan(mSpan);
+                    isExist = true;
                 }
             } else if (mSpan instanceof UnderlineSpan) {
                 if (own instanceof UnderlineSpan) {
                     getText().removeSpan(mSpan);
+                    isExist = true;
                 }
             }
         }
+        return isExist;
     }
 
     /**
@@ -281,7 +277,7 @@ public class PictureAndTextEditorView extends EditText {
         SpannableString newLine = new SpannableString("\n");
         edit_text.insert(index, newLine);//插入图片前换行
         // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
-        path = mBitmapTag + path + mBitmapTag;
+        path = imgSpanTag + path + imgSpanTag;
         SpannableString spannableString = new SpannableString(path);
         // 根据Bitmap对象创建ImageSpan对象
         ImageSpan imageSpan = new ImageSpan(mContext, bitmap);
@@ -307,7 +303,6 @@ public class PictureAndTextEditorView extends EditText {
     private SpannableString setStrikethroughSpanString(String text) {
         int start = getSelectionStart(); // 获取光标所在位置
         int end = getSelectionEnd();
-        
 
 
         // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
@@ -316,8 +311,9 @@ public class PictureAndTextEditorView extends EditText {
         //setOwnedSpan(spannableString, text.length(), spans);
         StrikethroughSpan strikethroughSpan = new StrikethroughSpan();//删除线
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
-        removeSpan(strikethroughSpan,spans);
-        spannableString.setSpan(strikethroughSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!removeSpan(strikethroughSpan, spans)) {
+            spannableString.setSpan(strikethroughSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
      /*   // 将选择的图片追加到EditText中光标所在位置
         if (start < 0 || start >= edit_text.length()) {
             edit_text.append(spannableString);
@@ -345,8 +341,9 @@ public class PictureAndTextEditorView extends EditText {
         setOwnedSpan(spannableString,text.length(),spans);*/
         UnderlineSpan underlineSpan = new UnderlineSpan();
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
-        removeSpan(underlineSpan,spans);
-        spannableString.setSpan(underlineSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!removeSpan(underlineSpan, spans)) {
+            spannableString.setSpan(underlineSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         // 将选择的图片追加到EditText中光标所在位置
 
         edit_text.replace(start, end, spannableString);
@@ -369,8 +366,9 @@ public class PictureAndTextEditorView extends EditText {
         setOwnedSpan(spannableString, text.length(), spans);*/
         SuperscriptSpan superscriptSpan = new SuperscriptSpan();
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
-        removeSpan(superscriptSpan,spans);
-        spannableString.setSpan(superscriptSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!removeSpan(superscriptSpan, spans)) {
+            spannableString.setSpan(superscriptSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         // 将选择的图片追加到EditText中光标所在位置
        /* if (start < 0 || start >= edit_text.length()) {
             edit_text.append(spannableString);
@@ -400,8 +398,9 @@ public class PictureAndTextEditorView extends EditText {
         setOwnedSpan(spannableString, text.length(), spans);*/
         SubscriptSpan subscriptSpan = new SubscriptSpan();
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
-        removeSpan(subscriptSpan,spans);
-        spannableString.setSpan(subscriptSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!removeSpan(subscriptSpan, spans)) {
+            spannableString.setSpan(subscriptSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         // 将选择的图片追加到EditText中光标所在位置
       /*  if (start < 0 || start >= edit_text.length()) {
             edit_text.append(spannableString);
@@ -429,8 +428,9 @@ public class PictureAndTextEditorView extends EditText {
         setOwnedSpan(spannableString, text.length(), spans);*/
         StyleSpan styleSpan_B = new StyleSpan(Typeface.BOLD);
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
-        removeSpan(styleSpan_B,spans);
-        spannableString.setSpan(styleSpan_B, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!removeSpan(styleSpan_B, spans)) {
+            spannableString.setSpan(styleSpan_B, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         // 将选择的图片追加到EditText中光标所在位置
        /* if (start < 0 || start >= edit_text.length()) {
             edit_text.append(spannableString);
@@ -459,8 +459,9 @@ public class PictureAndTextEditorView extends EditText {
         setOwnedSpan(spannableString, text.length(), spans);*/
         StyleSpan styleSpan_I = new StyleSpan(Typeface.ITALIC);
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
-        removeSpan(styleSpan_I,spans);
-        spannableString.setSpan(styleSpan_I, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!removeSpan(styleSpan_I, spans)) {
+            spannableString.setSpan(styleSpan_I, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         // 将选择的图片追加到EditText中光标所在位置
        /* if (start < 0 || start >= edit_text.length()) {
             edit_text.append(spannableString);
@@ -486,6 +487,9 @@ public class PictureAndTextEditorView extends EditText {
         // 用ImageSpan对象替换你指定的字符串
        /* ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
         setOwnedSpan(spannableString, text.length(), spans);*/
+        RelativeSizeSpan fontSizeSpan = new RelativeSizeSpan(fontSize);//字体大小
+        ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
+        removeSpan(fontSizeSpan, spans);
         spannableString.setSpan(fontSizeSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 将选择的图片追加到EditText中光标所在位置
       /*  if (start < 0 || start >= edit_text.length()) {
@@ -514,8 +518,9 @@ public class PictureAndTextEditorView extends EditText {
         // 用ImageSpan对象替换你指定的字符串
         ForegroundColorSpan frontColorSpan = new ForegroundColorSpan(color);
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
-        removeSpan(frontColorSpan,spans);
-        spannableString.setSpan(frontColorSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!removeSpan(frontColorSpan, spans)) {
+            spannableString.setSpan(frontColorSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         // 将选择的图片追加到EditText中光标所在位置
         /*if (start < 0 || start >= edit_text.length()) {
             edit_text.append(spannableString);
@@ -541,6 +546,9 @@ public class PictureAndTextEditorView extends EditText {
         SpannableString spannableString = new SpannableString(text);
        /* ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
         setOwnedSpan(spannableString, text.length(), spans);*/
+        ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
+        BackgroundColorSpan backColorSpan = new BackgroundColorSpan(Color.parseColor("#AC00FF30"));//字体背景色
+        removeSpan(backColorSpan, spans);
         spannableString.setSpan(backColorSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 将选择的图片追加到EditText中光标所在位置
        /* if (start < 0 || start >= edit_text.length()) {
@@ -575,8 +583,8 @@ public class PictureAndTextEditorView extends EditText {
             mContentList = new ArrayList<String>();
         }
         String content = getText().toString().replaceAll(mNewLineTag, "");
-        if (content.length() > 0 && content.contains(mBitmapTag)) {
-            String[] split = content.split(mBitmapTag);
+        if (content.length() > 0 && content.contains(imgSpanTag)) {
+            String[] split = content.split(imgSpanTag);
             mContentList.clear();
             for (String str : split) {
                 mContentList.add(str);
@@ -811,8 +819,8 @@ public class PictureAndTextEditorView extends EditText {
                 tag = getFontSizeSpanTag(longth, ((RelativeSizeSpan) mSpan).getSizeChange());
             } else if (mSpan instanceof UnderlineSpan) {
                 tag = getUnderlineSpanTag(longth);
-            } else {
-                tag = mSpan.toString();
+            } else if(mSpan instanceof ImageSpan){
+
             }
             text.insert(start, tag);
         }
