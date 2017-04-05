@@ -40,6 +40,7 @@ public class PermissionUtilActivity extends AppCompatActivity {
                 finish();
             }
         }
+        finish();
     }
 
     // 提示用户该请求权限的弹出框
@@ -47,7 +48,7 @@ public class PermissionUtilActivity extends AppCompatActivity {
 
         new AlertDialog.Builder(this)
                 .setTitle("存储权限不可用")
-                .setMessage("由于支付宝需要获取存储空间，为你存储个人信息；\n否则，您将无法正常使用支付宝")
+                .setMessage("由于需要获取存储空间，为你存储个人信息；\n否则，您将无法正常使用")
                 .setPositiveButton("立即开启", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

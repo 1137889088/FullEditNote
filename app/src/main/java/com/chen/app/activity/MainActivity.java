@@ -5,22 +5,25 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.chen.app.R;
+import com.chen.app.util.UriUtils;
 import com.chen.app.view.ColorPickerDialog;
 import com.chen.app.view.PictureAndTextEditorView;
-import com.chen.app.util.UriUtils;
 
 /**
  * Created by chen on 17/4/3.
  * 记事本编辑页
  */
 public class MainActivity extends Activity {
-
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     public static int color = Color.RED;//设置初始颜色
     public final int getImgResultCode = 888;//获取图片的回调函数代码
     private PictureAndTextEditorView mEditText;//自定义的富文本编辑器
