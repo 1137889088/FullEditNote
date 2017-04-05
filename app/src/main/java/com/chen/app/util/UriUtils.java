@@ -1,4 +1,4 @@
-package com.chen.fulleditnote.util;
+package com.chen.app.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

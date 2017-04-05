@@ -1,4 +1,4 @@
-package com.chen.fulleditnote.app.view;
+package com.chen.app.view;
 
 import android.app.Dialog;
 import android.content.Context;

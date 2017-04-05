@@ -1,4 +1,4 @@
-package com.chen.fulleditnote.util;
+package com.chen.app.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,15 +7,28 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by chen on 2017/4/4.
  */
-public class NoteDatebaseHelper extends SQLiteOpenHelper {
+public class NoteDB extends SQLiteOpenHelper {
 
     //类没有实例化,是不能用作父类构造器的参数,必须声明为静态
-    private static final String name = "noteDatebase"; //数据库名称
+    //notes数据库
+    public static final String TABLE_NAME_NOTES = "notes"; //数据库名称
+    public static final String COLUM_NAME_NOTES_ID = "_id";
+    public static final String COLUM_NAME_NOTES_TITLE = "title";
+    public static final String COLUM_NAME_NOTES_CONTENT = "_content";
+    public static final String COLUM_NAME_NOTES_DATE = "date";
+
+/*  //media数据库
+    public static final String TABLE_NAME_MEDIA = "media"; //数据库名称
+    public static final String COLUM_NAME_MEDIA_ID = "_id";
+    public static final String COLUM_NAME_MEDIA_TITLE = "title";
+    public static final String COLUM_NAME_MEDIA_CONTENT = "_content";
+    public static final String COLUM_NAME_MEDIA_DATE = "date";*/
+
     private static final int version = 1; //数据库版本
 
-    public NoteDatebaseHelper(Context context) {
+    public NoteDB(Context context) {
         //第三个参数CursorFactory指定在执行查询时获得一个游标实例的工厂类,设置为null,代表使用系统默认的工厂类
-        super(context, name, null, version);
+        super(context, TABLE_NAME_NOTES, null, version);
     }
 
     /**
@@ -26,10 +39,12 @@ public class NoteDatebaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS note" +
-                " (noteId integer primary key autoincrement," +
-                " title varchar(50)," +
-                " content varchar(2000)");
+        db.execSQL("CREATE TABLE "+TABLE_NAME_NOTES+"(" +
+                COLUM_NAME_NOTES_ID+" INTEGER PRIMARY KEY AUTOINCREAMENT," +
+                COLUM_NAME_NOTES_TITLE+" TEXT NOT NULL DEFAULT \"\"," +
+                COLUM_NAME_NOTES_CONTENT+" TEXT NOT NULL DEFAULT \"\"," +
+                COLUM_NAME_NOTES_DATE+" TEXT NOT NULL DEFAULT \"\"," +
+                ")");
     }
 
     /**

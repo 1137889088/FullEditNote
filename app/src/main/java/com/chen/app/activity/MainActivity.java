@@ -1,4 +1,4 @@
-package com.chen.fulleditnote.app.activity;
+package com.chen.app.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,10 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import app.chen.com.fulleditnote.R;
-import com.chen.fulleditnote.app.view.ColorPickerDialog;
-import com.chen.fulleditnote.app.view.PictureAndTextEditorView;
-import com.chen.fulleditnote.util.UriUtils;
+import com.chen.app.R;
+import com.chen.app.view.ColorPickerDialog;
+import com.chen.app.view.PictureAndTextEditorView;
+import com.chen.app.util.UriUtils;
 
 /**
  * Created by chen on 17/4/3.
@@ -263,6 +263,7 @@ public class MainActivity extends Activity {
                         Uri selectedImage = data.getData();
                         String imageurl = UriUtils.getImageAbsolutePath(this, selectedImage);
                         mEditText.insertBitmap(imageurl);
+                        System.out.println("回调结束");
                     }
                 default:
                     break;

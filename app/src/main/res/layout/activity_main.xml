@@ -6,27 +6,37 @@
               android:background="#ffffff"
               android:orientation="vertical">
     <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="38dp"
+                  android:layout_height="wrap_content"
                   android:layout_weight="0.01">
         <TextView android:layout_width="wrap_content"
-                  android:layout_weight="0.16"
                   android:text="标题:"
                   android:textColor="@color/colorBlack"
-                  android:textSize="30sp"
-                  android:layout_height="match_parent" android:textAllCaps="true"/>
+                  android:gravity="center"
+                  android:textSize="20sp"
+                  android:layout_marginRight="5sp"
+                  android:layout_height="match_parent"/>
+
         <EditText android:layout_width="wrap_content"
                   android:layout_weight="1"
+                  android:textSize="15sp"
+                  android:background="@drawable/style_border"
+                  android:textColor="#252525"
+                  android:layout_marginRight="10sp"
                   android:layout_height="match_parent"/>
     </LinearLayout>
-    <com.chen.fulleditnote.app.view.PictureAndTextEditorView
+    <com.chen.app.view.PictureAndTextEditorView
+            android:paddingTop="10sp"
+            android:paddingBottom="10sp"
+            android:paddingLeft="10sp"
+            android:paddingRight="10sp"
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="0.90"
             android:scrollbars="vertical"
             android:scrollbarStyle="outsideOverlay"
             android:gravity="start"
-            android:hint="132456"
+            android:background="@drawable/style_border"
             android:textColor="@color/colorBlack"
     />
     <LinearLayout android:layout_width="match_parent"
@@ -77,6 +87,10 @@
                 android:id="@+id/btnSetUnderline"
                 android:text="下划线"
                 android:layout_height="wrap_content" android:layout_weight="0.07"/>
+        <Button android:layout_width="72dp"
+                android:id="@+id/btnSave"
+                android:text="保存"
+                android:layout_height="match_parent"/>
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:weightSum="1">
@@ -96,9 +110,6 @@
                 android:id="@+id/btnSetStyleITALIC"
                 android:text="斜体"
                 android:layout_height="wrap_content"/>
-        <Button android:layout_width="wrap_content"
-                android:id="@+id/btnSave"
-                android:text="保存"
-                android:layout_height="match_parent"/>
+
     </LinearLayout>
 </LinearLayout>

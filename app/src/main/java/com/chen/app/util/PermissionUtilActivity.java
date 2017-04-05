@@ -1,4 +1,4 @@
-package com.chen.fulleditnote.util;
+package com.chen.app.util;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,8 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-import com.chen.fulleditnote.app.activity.MainActivity;
-import app.chen.com.fulleditnote.R;
+import com.chen.app.R;
 
 /**
  * 为高版本的Android提供权限申请
@@ -28,8 +27,7 @@ public class PermissionUtilActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_notelist);
         // 版本判断。当手机系统大于 23 时，才有必要去判断权限是否获取
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 检查该权限是否已经获取
@@ -84,6 +82,7 @@ public class PermissionUtilActivity extends AppCompatActivity {
                         finish();
                 } else {
                     Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         }
@@ -137,10 +136,7 @@ public class PermissionUtilActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                     Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    //作为接受数据端
-                    intent.setClass(this, MainActivity.class);
-                    startActivity(intent);
+                    finish();
                 }
             }
         }
