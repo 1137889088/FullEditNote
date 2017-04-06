@@ -39,8 +39,9 @@ public class PermissionUtilActivity extends AppCompatActivity {
             }else {
                 finish();
             }
+        }else{
+            finish();
         }
-        finish();
     }
 
     // 提示用户该请求权限的弹出框
