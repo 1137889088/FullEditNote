@@ -25,6 +25,7 @@
                         android:textColor="@android:color/white"
                         android:layout_marginRight="10sp"
                         android:layout_height="match_parent"
+                        android:background="#3f51b5"
                         android:singleLine="true"
                         android:layout_weight="1.0"
                         android:textColorLink="@android:color/background_dark"

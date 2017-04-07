@@ -2,4 +2,5 @@
     <string name="app_name">FullEditNote</string>
     <drawable name="btn_save_normal">#3f51b5</drawable>
     <drawable name="btn_save_pressed">#1a34c2</drawable>
+
 </resources>
