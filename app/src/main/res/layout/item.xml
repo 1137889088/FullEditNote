@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:paddingBottom="5dp"
+              android:paddingTop="5dp">
+    <LinearLayout
+            android:id="@+id/tv1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:gravity="right"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+        <TextView
+                android:id="@+id/text_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="Hover"
+                android:textColor="@color/colorBlack"
+                android:text="Do not, for one repulse, forgo the purpose that you resolved to effort. "/>
+        <TextView
+                android:id="@+id/text_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="#1d1c1c"
+                android:paddingBottom="5dp"
+                android:text="2017.4.6"
+                android:textSize="10sp"
+                android:paddingRight="10dp"/>
+
+    </LinearLayout>
+    <TextView
+            android:id="@+id/edit"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="#1417d6"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:text="查看"/>
+    <TextView
+            android:id="@+id/delete"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="#FFFF0000"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:text="删除"/>
+</LinearLayout>

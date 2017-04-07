@@ -9,7 +9,7 @@
         android:background="#fff"
         tools:showIn="@layout/activity_notelist">
     <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-    <!--tools:context="app.chen.com.swaplayout.MainActivity"-->>
+    <!--tools:context="app.chen.com.swaplayEditActivityvity"-->>
     <com.chen.app.view.ScollerLeftDeleteListView
             android:id="@+id/list"
             android:layout_width="match_parent"

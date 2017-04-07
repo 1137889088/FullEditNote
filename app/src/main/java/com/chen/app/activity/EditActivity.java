@@ -3,6 +3,7 @@ package com.chen.app.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
@@ -15,12 +16,15 @@ import com.chen.app.R;
 import com.chen.app.util.UriUtils;
 import com.chen.app.view.ColorPickerDialog;
 import com.chen.app.view.PictureAndTextEditorView;
+import org.sil.palaso.Graphite;
+
+import static org.sil.palaso.Graphite.loadGraphite;
 
 /**
  * Created by chen on 17/4/3.
  * 记事本编辑页
  */
-public class MainActivity extends Activity {
+public class EditActivity extends Activity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -46,17 +50,13 @@ public class MainActivity extends Activity {
     private EditText etFontSize;//字体大小输入
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       /* Intent intent = new Intent();
-        intent.setClass(this, PermissionUtilActivity.class);
-        startActivity(intent);*/
-      /* //加载Grpahite引擎
+
+      //加载Grpahite引擎
         loadGraphite();
         //获取蒙文字体
-        Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");*/
+        Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       /* tvFontSize = (TextView) findViewById(R.id.tvFontSize);
-        tvFontSize.setText("字体大小:");*/
 
         btnSave = (Button) findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -149,20 +149,6 @@ public class MainActivity extends Activity {
 
         etFontSize = (EditText) findViewById(R.id.etFontSize);
         etFontSize.setText("1");
-  /*      etFontSize.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            *//**
-             * Called when the focus state of a view has changed.
-             *
-             * @param v        The view whose state has changed.
-             * @param hasFocus The new focus state of v.
-             *//*
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-
-                }
-            }
-        });*/
 
         btnSetFontSize = (Button) findViewById(R.id.btnSetFontSize);
         btnSetFontSize.setOnClickListener(new View.OnClickListener() {
@@ -182,11 +168,11 @@ public class MainActivity extends Activity {
                     try {
                         fontSize = Float.parseFloat(fontSizeText);
                     } catch (NumberFormatException e) {
-                        Toast.makeText(MainActivity.this,"请正确输入数字(大于0)",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditActivity.this,"请正确输入数字(大于0)",Toast.LENGTH_SHORT).show();
                     }
                     if(fontSize<=0){
                         fontSize = 1;
-                        Toast.makeText(MainActivity.this,"请正确输入数字(大于0)",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditActivity.this,"请正确输入数字(大于0)",Toast.LENGTH_SHORT).show();
                     }
                     mEditText.setFontSize(fontSize);
                 }
@@ -195,6 +181,8 @@ public class MainActivity extends Activity {
         });
 
         mEditText = (PictureAndTextEditorView) findViewById(R.id.edit_text);
+        mEditText.setTypeface(mtfp);
+
         btnAddPic = (Button) findViewById(R.id.btnAddPic);
 
         //mEditText.setTypeface(mtfp);
@@ -236,7 +224,7 @@ public class MainActivity extends Activity {
         btnSelectColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ColorPickerDialog colorDialog = new ColorPickerDialog(MainActivity.this, R.style.dialog, color,
+                ColorPickerDialog colorDialog = new ColorPickerDialog(EditActivity.this, R.style.dialog, color,
                         new ColorPickerDialog.OnColorChangedListener() {
                             @Override
                             public void colorChanged(int color) {
