@@ -1,9 +1,11 @@
 package com.chen.app.activity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
@@ -13,12 +15,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.chen.app.R;
+import com.chen.app.db.NoteDB;
+import com.chen.app.domain.NoteInfoBean;
 import com.chen.app.util.UriUtils;
 import com.chen.app.view.ColorPickerDialog;
 import com.chen.app.view.PictureAndTextEditorView;
-import org.sil.palaso.Graphite;
 
-import static org.sil.palaso.Graphite.loadGraphite;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by chen on 17/4/3.
@@ -28,10 +32,11 @@ public class EditActivity extends Activity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
     public static int color = Color.RED;//设置初始颜色
     public final int getImgResultCode = 888;//获取图片的回调函数代码
-    private PictureAndTextEditorView mEditText;//自定义的富文本编辑器
-
+    private PictureAndTextEditorView etContent;//自定义的富文本编辑器
+    //private boolean supportMogola = false;
 
     private Button btnAddPic;//添加图片按钮
     private Button btnSetFontColor;//改变字体颜色
@@ -45,24 +50,60 @@ public class EditActivity extends Activity {
     private Button btnSetStyleBOLD;//设置粗体
     private Button btnSetStyleITALIC;//设置斜体
     private Button btnSave;//设置斜体
-
+    private NoteInfoBean bean;
     private TextView tvFontSize;//字体大小选择
     private EditText etFontSize;//字体大小输入
+
+
+    NoteDB db;
+    private SQLiteDatabase readableDatabase;
+    private SQLiteDatabase writableDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-      //加载Grpahite引擎
-        loadGraphite();
-        //获取蒙文字体
-        Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
+        db = new NoteDB(this);
+        readableDatabase = db.getReadableDatabase();
+        writableDatabase = db.getWritableDatabase();
+        //Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Intent intent = getIntent();
+        //从Intent当中根据key取得value
+        if (intent != null) {
+            String value = intent.getStringExtra("id");
+            bean = queryById(value);
+        }
+        final EditText etTitle = (EditText) findViewById(R.id.etTitle);
+        etContent = (PictureAndTextEditorView) findViewById(R.id.etContent);
+        if (bean != null) {
+            etTitle.setText(bean.getNoteTitle());
+            etContent.setText(bean.getNoteContext());
+        }
         btnSave = (Button) findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditText.save();
+                String content = etContent.save();
+                String title = etTitle.getText().toString();
+                String date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+                if (content.toString().trim().equals("") || content == null) {
+                    Toast.makeText(EditActivity.this, "请输入文本后在保存", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (title.equals("") || null == title) {
+                    Toast.makeText(EditActivity.this, "为你的笔记起一个标题吧", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (bean == null) {
+                    bean = new NoteInfoBean(title, date, content);
+                    insert(bean);
+                } else {
+                    bean.setNoteTitle(title);
+                    bean.setNoteContext(content);
+                    bean.setNoteDate(date);
+                    update(bean);
+                }
             }
         });
 
@@ -75,7 +116,7 @@ public class EditActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                mEditText.setSuperscript();
+                etContent.setSuperscript();
             }
         });
 
@@ -88,7 +129,7 @@ public class EditActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                mEditText.setSubscript();
+                etContent.setSubscript();
             }
         });
 
@@ -101,7 +142,7 @@ public class EditActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                mEditText.setStyleBOLD();
+                etContent.setStyleBOLD();
             }
         });
 
@@ -114,7 +155,7 @@ public class EditActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                mEditText.setStyleITALIC();
+                etContent.setStyleITALIC();
             }
         });
 
@@ -128,7 +169,7 @@ public class EditActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                mEditText.setStrikethrough();
+                etContent.setStrikethrough();
             }
         });
 
@@ -142,7 +183,7 @@ public class EditActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                mEditText.setUnderline();
+                etContent.setUnderline();
             }
         });
 
@@ -161,31 +202,31 @@ public class EditActivity extends Activity {
             public void onClick(View v) {
                 String fontSizeText = etFontSize.getText().toString().trim();
                 float fontSize = 1;
-                if(fontSizeText.equals("")||fontSizeText==null){
-                    mEditText.setText("1");
-                    mEditText.setFontSize(fontSize);
-                }else{
+                if (fontSizeText.equals("") || fontSizeText == null) {
+                    etContent.setText("1");
+                    etContent.setFontSize(fontSize);
+                } else {
                     try {
                         fontSize = Float.parseFloat(fontSizeText);
                     } catch (NumberFormatException e) {
-                        Toast.makeText(EditActivity.this,"请正确输入数字(大于0)",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditActivity.this, "请正确输入数字(大于0)", Toast.LENGTH_SHORT).show();
                     }
-                    if(fontSize<=0){
+                    if (fontSize <= 0) {
                         fontSize = 1;
-                        Toast.makeText(EditActivity.this,"请正确输入数字(大于0)",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditActivity.this, "请正确输入数字(大于0)", Toast.LENGTH_SHORT).show();
                     }
-                    mEditText.setFontSize(fontSize);
+                    etContent.setFontSize(fontSize);
                 }
-                mEditText.setFontSize();
+                etContent.setFontSize();
             }
         });
 
-        mEditText = (PictureAndTextEditorView) findViewById(R.id.edit_text);
-        mEditText.setTypeface(mtfp);
 
+        //etContent.setTypeface(mtfp);
+        //etContent.getTypeface();
         btnAddPic = (Button) findViewById(R.id.btnAddPic);
 
-        //mEditText.setTypeface(mtfp);
+        //etContent.setTypeface(mtfp);
         /**
          * 改变字体颜色按钮监听
          */
@@ -205,7 +246,7 @@ public class EditActivity extends Activity {
         btnSetFontColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditText.setFontColor();
+                etContent.setFontColor();
             }
         });
 
@@ -213,7 +254,7 @@ public class EditActivity extends Activity {
         btnSetBackColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditText.setBackColor();
+                etContent.setBackColor();
             }
         });
 
@@ -228,7 +269,7 @@ public class EditActivity extends Activity {
                         new ColorPickerDialog.OnColorChangedListener() {
                             @Override
                             public void colorChanged(int color) {
-                                mEditText.setFrontColor(color);//将颜色设置到
+                                etContent.setFrontColor(color);//将颜色设置到
                             }
                         });
                 colorDialog.setCanceledOnTouchOutside(true);// 设置点击Dialog外部任意区域关闭Dialo
@@ -239,9 +280,10 @@ public class EditActivity extends Activity {
 
     /**
      * activity的回调判断
+     *
      * @param requestCode 回调的代码
-     * @param resultCode 结果码
-     * @param data 回调的数据
+     * @param resultCode  结果码
+     * @param data        回调的数据
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -252,11 +294,44 @@ public class EditActivity extends Activity {
                     if (data != null) {
                         Uri selectedImage = data.getData();
                         String imageurl = UriUtils.getImageAbsolutePath(this, selectedImage);
-                        mEditText.insertBitmap(imageurl);
+                        etContent.insertBitmap(imageurl);
                     }
                 default:
                     break;
             }
         }
+    }
+
+    private NoteInfoBean queryById(String id) {
+        NoteInfoBean infoBean = null;
+        Cursor query = readableDatabase.query(NoteDB.TABLE_NAME_NOTES, null, NoteDB.COLUM_NAME_NOTES_ID + "=?", new String[]{id}, null, null, null);
+        while (query.moveToNext()) {
+            infoBean = new NoteInfoBean();
+            infoBean.setNoteId(query.getString(0));
+            infoBean.setNoteTitle(query.getString(1));
+            infoBean.setNoteContext(query.getString(2));
+            infoBean.setNoteDate(query.getString(3));
+        }
+        return infoBean;
+    }
+
+    public int insert(NoteInfoBean noteInfoBean) {
+
+        ContentValues cv = new ContentValues();
+        cv.put(NoteDB.COLUM_NAME_NOTES_TITLE, noteInfoBean.getNoteTitle());
+        cv.put(NoteDB.COLUM_NAME_NOTES_CONTENT, noteInfoBean.getNoteContext());
+        //new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date())
+        cv.put(NoteDB.COLUM_NAME_NOTES_DATE, noteInfoBean.getNoteDate());
+        return (int) writableDatabase.insert(NoteDB.TABLE_NAME_NOTES, "''", cv);
+    }
+
+    public int update(NoteInfoBean noteInfoBean) {
+
+        ContentValues cv = new ContentValues();
+        cv.put(NoteDB.COLUM_NAME_NOTES_TITLE, noteInfoBean.getNoteTitle());
+        cv.put(NoteDB.COLUM_NAME_NOTES_CONTENT, noteInfoBean.getNoteContext());
+        //new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date())
+        cv.put(NoteDB.COLUM_NAME_NOTES_DATE, noteInfoBean.getNoteDate());
+        return (int) writableDatabase.update(NoteDB.TABLE_NAME_NOTES, cv, NoteDB.COLUM_NAME_NOTES_ID + "=?", new String[]{noteInfoBean.getNoteId()});
     }
 }

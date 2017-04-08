@@ -26,7 +26,7 @@ public class NoteDB extends SQLiteOpenHelper {
 
     private static final int version = 1; //数据库版本
 
-    public NoteDB(Context context) {
+        public NoteDB(Context context) {
         //第三个参数CursorFactory指定在执行查询时获得一个游标实例的工厂类,设置为null,代表使用系统默认的工厂类
         super(context, TABLE_NAME_NOTES, null, version);
     }
@@ -40,10 +40,10 @@ public class NoteDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE "+TABLE_NAME_NOTES+"(" +
-                COLUM_NAME_NOTES_ID+" INTEGER PRIMARY KEY AUTOINCREAMENT," +
-                COLUM_NAME_NOTES_TITLE+" TEXT NOT NULL DEFAULT \"\"," +
-                COLUM_NAME_NOTES_CONTENT+" TEXT NOT NULL DEFAULT \"\"," +
-                COLUM_NAME_NOTES_DATE+" TEXT NOT NULL DEFAULT \"\"," +
+                COLUM_NAME_NOTES_ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUM_NAME_NOTES_TITLE+" TEXT  DEFAULT \"\"," +
+                COLUM_NAME_NOTES_CONTENT+" TEXT  DEFAULT \"\"," +
+                COLUM_NAME_NOTES_DATE+" TEXT DEFAULT \"\"" +
                 ")");
     }
 

@@ -7,17 +7,38 @@ public class NoteInfoBean {
     private String noteId;
     private String noteTitle;
     private String noteDate;
+    private String noteContext;
 
-    public NoteInfoBean(String noteId, String noteTitle, String noteDate) {
-        this.noteId = noteId;
-        this.noteTitle = noteTitle;
-        this.noteDate = noteDate;
+    public NoteInfoBean() {
     }
-
     public NoteInfoBean(String noteTitle, String noteDate) {
         this.noteTitle = noteTitle;
         this.noteDate = noteDate;
     }
+
+    public NoteInfoBean(String noteTitle, String noteDate, String noteContext) {
+        this.noteTitle = noteTitle;
+        this.noteDate = noteDate;
+        this.noteContext = noteContext;
+    }
+
+    public NoteInfoBean(String noteId, String noteTitle, String noteDate, String noteContext) {
+        this.noteId = noteId;
+        this.noteTitle = noteTitle;
+        this.noteDate = noteDate;
+        this.noteContext = noteContext;
+    }
+
+    public String getNoteContext() {
+        return noteContext;
+    }
+
+    public void setNoteContext(String noteContext) {
+        this.noteContext = noteContext;
+    }
+
+
+
 
     public String getNoteId() {
         return noteId;
