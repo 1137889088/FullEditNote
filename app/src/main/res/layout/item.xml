@@ -36,7 +36,7 @@
     </LinearLayout>
     <TextView
             android:id="@+id/edit"
-            android:layout_width="50dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:background="#1417d6"
             android:gravity="center"
@@ -44,7 +44,7 @@
             android:text="查看"/>
     <TextView
             android:id="@+id/delete"
-            android:layout_width="50dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:background="#FFFF0000"
             android:gravity="center"

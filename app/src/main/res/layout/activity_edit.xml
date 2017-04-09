@@ -74,28 +74,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="字体颜色"
-                    android:layout_alignParentBottom="true"/>
+                    android:layout_alignParentBottom="true"
+                    android:focusable="false"/>
             <Button
                     android:id="@+id/btnSetBackColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="背景颜色"
+                    android:focusable="false"
                     android:layout_alignParentBottom="true"/>
             <Button
                     android:id="@+id/btnAddPic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="图片"
+                    android:focusable="false"
                     android:layout_alignParentBottom="true"/>
             <Button
                     android:id="@+id/btnSelectColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="选择颜色"
+                    android:focusable="false"
                     android:layout_alignParentBottom="true"/>
             <Button android:layout_width="wrap_content"
                     android:id="@+id/btnSetFontSize"
                     android:text="字体大小:"
+                    android:focusable="false"
                     android:layout_height="wrap_content"/>
             <EditText
                     android:layout_width="27dp"
@@ -108,26 +113,32 @@
             <Button android:layout_width="wrap_content"
                     android:id="@+id/btnSetStrikeThrough"
                     android:text="删除线"
+                    android:focusable="false"
                     android:layout_height="match_parent"/>
             <Button android:layout_width="wrap_content"
                     android:id="@+id/btnSetUnderline"
                     android:text="下划线"
+                    android:focusable="false"
                     android:layout_height="wrap_content"/>
             <Button android:layout_width="wrap_content"
                     android:id="@+id/btnSetSuperscript"
                     android:text="上标"
+                    android:focusable="false"
                     android:layout_height="match_parent"/>
             <Button android:layout_width="wrap_content"
                     android:id="@+id/btnSetSubscript"
                     android:text="下标"
+                    android:focusable="false"
                     android:layout_height="wrap_content"/>
             <Button android:layout_width="wrap_content"
                     android:id="@+id/btnSetStyleBOLD"
                     android:text="粗体"
+                    android:focusable="false"
                     android:layout_height="wrap_content"/>
             <Button android:layout_width="wrap_content"
                     android:id="@+id/btnSetStyleITALIC"
                     android:text="斜体"
+                    android:focusable="false"
                     android:layout_height="wrap_content"/>
         </LinearLayout>
     </HorizontalScrollView>

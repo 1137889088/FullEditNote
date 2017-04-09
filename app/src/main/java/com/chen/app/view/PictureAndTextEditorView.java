@@ -31,6 +31,7 @@ public class PictureAndTextEditorView extends EditText {
 
     private String mNewLineTag = "\n";//换行符
 
+/*
     public static final String superscriptSpanTag = "<span:0:L>";//上标
     public static final String imgSpanTag = "<span:1>";//图片
     public static final String frontColorSpanTag = "<span:2:L:C>";//字颜色
@@ -42,11 +43,17 @@ public class PictureAndTextEditorView extends EditText {
     public static final String underlineSpanTag = "<span:8:L>";//下划线
     public static final String subscriptSpanTag = "<span:9:L>";//下标
 
+*/
+
+
+
+/*
+
     private String getSuperscriptSpanTag(int longth) {
         return superscriptSpanTag.replace("L", "" + longth);
     }
 
-    private static String getImgSpanTag(int longth,String path) {
+    private static String getImgSpanTag(int longth, String path) {
         return imgSpanTag.replace("L", "" + longth).replace("C", "" + path);
     }
 
@@ -80,7 +87,7 @@ public class PictureAndTextEditorView extends EditText {
 
     public static String getSubscriptSpanTag(int longth) {
         return subscriptSpanTag.replace("L", "" + longth);
-    }
+    }*/
 
 
     public Context getmContext() {
@@ -275,9 +282,9 @@ public class PictureAndTextEditorView extends EditText {
         int index = getSelectionStart(); // 获取光标所在位置
         //插入换行符，使图片单独占一行
         SpannableString newLine = new SpannableString("\n");
-        edit_text.insert(index, newLine);//插入图片前换行
+        edit_text.insert(index, newLine);//
         // 创建一个SpannableString对象，以便插入用ImageSpan对象封装的图像
-        path = imgSpanTag + path + imgSpanTag;
+        path = "<Img src=\"" + path + "\"><Img>";
         SpannableString spannableString = new SpannableString(path);
         // 根据Bitmap对象创建ImageSpan对象
         ImageSpan imageSpan = new ImageSpan(mContext, bitmap);
@@ -312,7 +319,9 @@ public class PictureAndTextEditorView extends EditText {
         StrikethroughSpan strikethroughSpan = new StrikethroughSpan();//删除线
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
         if (!removeSpan(strikethroughSpan, spans)) {
+
             spannableString.setSpan(strikethroughSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            edit_text.replace(start, end, spannableString);
         }
      /*   // 将选择的图片追加到EditText中光标所在位置
         if (start < 0 || start >= edit_text.length()) {
@@ -320,7 +329,6 @@ public class PictureAndTextEditorView extends EditText {
         } else {
             edit_text.insert(start, spannableString);
         }*/
-        edit_text.replace(start, end, spannableString);
         //edit_text.delete(start + spannableString.length(), start + spannableString.length() * 2);
         return spannableString;
     }
@@ -547,7 +555,7 @@ public class PictureAndTextEditorView extends EditText {
        /* ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
         setOwnedSpan(spannableString, text.length(), spans);*/
         ParcelableSpan[] spans = getText().getSpans(start, end, ParcelableSpan.class);
-        BackgroundColorSpan backColorSpan = new BackgroundColorSpan(Color.parseColor("#AC00FF30"));//字体背景色
+        BackgroundColorSpan backColorSpan = new BackgroundColorSpan(color);//字体背景色
         removeSpan(backColorSpan, spans);
         spannableString.setSpan(backColorSpan, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 将选择的图片追加到EditText中光标所在位置
@@ -747,6 +755,7 @@ public class PictureAndTextEditorView extends EditText {
         setUnderlineSpanString(selectText.toString());
     }
 
+
     public void setSuperscript() {
         int start = getSelectionStart();
         int end = getSelectionEnd();
@@ -758,6 +767,9 @@ public class PictureAndTextEditorView extends EditText {
         setSuperscriptSpanString(selectText.toString());
     }
 
+    /**
+     * 改变文本加上下划线的样式
+     */
     public void setSubscript() {
         int start = getSelectionStart();
         int end = getSelectionEnd();
@@ -769,6 +781,9 @@ public class PictureAndTextEditorView extends EditText {
         setSubscriptSpanString(selectText.toString());
     }
 
+    /**
+     * 改变文本加上粗体的样式
+     */
     public void setStyleBOLD() {
         int start = getSelectionStart();
         int end = getSelectionEnd();
@@ -780,6 +795,9 @@ public class PictureAndTextEditorView extends EditText {
         setStyleBOLDSpanString(selectText.toString());
     }
 
+    /**
+     * 改变文本加上斜体的样式
+     */
     public void setStyleITALIC() {
         int start = getSelectionStart();
         int end = getSelectionEnd();
@@ -791,8 +809,15 @@ public class PictureAndTextEditorView extends EditText {
         setStyleITALICSpanString(selectText.toString());
     }
 
-    public String save() {
+    /**
+     * 将文本在对应的样式中加上标记以
+     * 使得在存储的时候不会丢失样式
+     *
+     * @return 标记后的文字
+     */
+/*    public String save() {
         Editable text = getText();
+        //获取所有被标记的文本
         ParcelableSpan[] mSpans = text.getSpans(0, length(), ParcelableSpan.class);
         for (ParcelableSpan mSpan : mSpans) {
             int start = text.getSpanStart(mSpan);
@@ -826,5 +851,118 @@ public class PictureAndTextEditorView extends EditText {
         }
         System.out.println(text);
         return text.toString();
+    }*/
+    public String save() {
+        Editable text = getText();
+        ParcelableSpan temp = null;
+        int begain = 0;
+        //获取所有被标记的文本
+        ParcelableSpan[] mSpans = text.getSpans(0, length(), ParcelableSpan.class);
+        for (ParcelableSpan mSpan : mSpans) {
+            int start = text.getSpanStart(mSpan);
+            int end = text.getSpanEnd(mSpan);
+            int creatse = 0;
+            if (temp == null) {
+                int theLong = "<Normal>".length();
+                text.insert(begain, "<Normal>");
+                text.insert(start + theLong, "</Normal>");
+                start = start + theLong * 2 + 1;
+                end = end + theLong * 2 + 1;
+            }
+            if (mSpan instanceof StyleSpan) {
+                if (((StyleSpan) mSpan).getStyle() == Typeface.BOLD) {
+                    text.insert(start, "<BOLD>");
+                    int l = "<BOLD>".length();
+                    end = end + l;
+                    text.insert(end, "</BOLD>");
+                    end = end + l + 1;
+                    creatse = l * 2 + 1;
+                } else if (((StyleSpan) mSpan).getStyle() == Typeface.ITALIC) {
+                    text.insert(start, "<ITALIC>");
+                    int l = "<ITALIC>".length();
+                    end = end + l;
+                    text.insert(end, "</ITALIC>");
+                    end = end + l + 1;
+                    creatse = l * 2 + 1;
+                }
+            } else if (mSpan instanceof ForegroundColorSpan) {
+                String foregroundColor = ((ForegroundColorSpan) mSpan).getForegroundColor() + "";
+                String front = "<ForegroundColor color=\"" + foregroundColor + "\">";
+                text.insert(start, front);
+                end = end + front.length();
+                text.insert(end, "</ForegroundColor>");
+                end = end + "</ForegroundColor>".length();
+                creatse = front.length() + "</ForegroundColor>".length();
+            } else if (mSpan instanceof BackgroundColorSpan) {
+                String backgroundColorSpan = ((BackgroundColorSpan) mSpan).getBackgroundColor() + "";
+                String front = "<BackgroundColorSpan color=\"" + backgroundColorSpan + "\">";
+                text.insert(start, front);
+                end = end + front.length();
+                text.insert(end, "</BackgroundColorSpan>");
+                end = end + "</BackgroundColorSpan>".length();
+                creatse = front.length() + "</BackgroundColorSpan>".length();
+            } else if (mSpan instanceof SuperscriptSpan) {
+                text.insert(start, "<Superscript>");
+                int l = "<Superscript>".length();
+                end = end + l;
+                text.insert(end, "</Superscript>");
+                end = end + l + 1;
+                creatse = l * 2 + 1;
+            } else if (mSpan instanceof SubscriptSpan) {
+                text.insert(start, "<SubscriptSpan>");
+                int l = "<SubscriptSpan>".length();
+                end = end + l;
+                text.insert(end, "</SubscriptSpan>");
+                end = end + l + 1;
+                creatse = l * 2 + 1;
+            } else if (mSpan instanceof StrikethroughSpan) {
+                text.insert(start, "<StrikethroughSpan>");
+                int l = "<StrikethroughSpan>".length();
+                end = end + l;
+                text.insert(end, "</StrikethroughSpan>");
+                end = end + l + 1;
+                creatse = l * 2 + 1;
+            } else if (mSpan instanceof RelativeSizeSpan) {
+                float sizeChange = ((RelativeSizeSpan) mSpan).getSizeChange();
+                String front = "<RelativeSizeSpan size=\"" + sizeChange + "\">";
+                text.insert(start, front);
+                end = end + front.length();
+                text.insert(end, "</RelativeSizeSpan>");
+                end = end + "</RelativeSizeSpan>".length();
+                creatse = front.length() + "</RelativeSizeSpan>".length();
+            } else if (mSpan instanceof UnderlineSpan) {
+                text.insert(start, "<UnderlineSpan>");
+                int l = "<UnderlineSpan>".length();
+                end = end + l;
+                text.insert(end, "</UnderlineSpan>");
+                end = end + l + 1;
+                creatse = l * 2 + 1;
+            } else if (mSpan instanceof ImageSpan) {
+                int length = ((ImageSpan) mSpan).getSource().length();
+                creatse = length + "<Img src=\"\"><Img>".length();
+            }
+            if (begain < end) {
+                begain = end;
+            } else {
+                begain = begain + creatse;
+            }
+        }
+        if (begain < text.length()) {
+            int theLong = "<Normal>".length();
+            text.insert(begain, "<Normal>");
+            text.insert(text.length(), "</Normal>");
+        }
+        return text.toString();
     }
+
+    public static final String superscriptSpanTag = "<Super>";//上标
+    public static final String imgSpanTag = "<span:1>";//图片
+    public static final String frontColorSpanTag = "<span:2:L:C>";//字颜色
+    public static final String backColorSpanTag = "<span:3:L:C>";//背景
+    public static final String styleSpanBTag = "<BOLD>";//粗体
+    public static final String styleSpanITag = "<BOLD>";//斜体
+    public static final String fontSizeSpanTag = "<span:6:L:C>";//字体大小
+    public static final String strikethroughSpanTag = "<span:7:L>";//删除线
+    public static final String underlineSpanTag = "<UnderlineSpan>";//下划线
+    public static final String subscriptSpanTag = "<span:9:L>";//下标
 }

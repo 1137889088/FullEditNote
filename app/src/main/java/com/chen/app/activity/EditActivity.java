@@ -67,19 +67,32 @@ public class EditActivity extends Activity {
         writableDatabase = db.getWritableDatabase();
         //Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_edit);
         Intent intent = getIntent();
         //从Intent当中根据key取得value
+
         if (intent != null) {
             String value = intent.getStringExtra("id");
-            bean = queryById(value);
+            //如果传来的不是-1
+            //证明这次是查看数据需要奥数据库中将数据取出
+            if (!value.equals("-1")) {
+                bean = queryById(value);
+            }
+
         }
+
+
         final EditText etTitle = (EditText) findViewById(R.id.etTitle);
         etContent = (PictureAndTextEditorView) findViewById(R.id.etContent);
+        //如果从数据库中查到了数据九江数据设置到文本中进行显示
         if (bean != null) {
             etTitle.setText(bean.getNoteTitle());
             etContent.setText(bean.getNoteContext());
         }
+
+        /**
+         * 保存按钮的操作
+         */
         btnSave = (Button) findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,26 +100,37 @@ public class EditActivity extends Activity {
                 String content = etContent.save();
                 String title = etTitle.getText().toString();
                 String date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+                //防止正文为空
                 if (content.toString().trim().equals("") || content == null) {
                     Toast.makeText(EditActivity.this, "请输入文本后在保存", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //防止标题为空
                 if (title.equals("") || null == title) {
                     Toast.makeText(EditActivity.this, "为你的笔记起一个标题吧", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //如果bean是空的证明没有传来id
+                //就是说这个文件是新建的
                 if (bean == null) {
                     bean = new NoteInfoBean(title, date, content);
                     insert(bean);
                 } else {
+                    //则是在数据库中查出了的数据
+                    //保存时只需要更新
                     bean.setNoteTitle(title);
                     bean.setNoteContext(content);
                     bean.setNoteDate(date);
                     update(bean);
                 }
+                //保存完毕结束当前activity回到列表页面
+                finish();
             }
         });
 
+        /**
+         * 设置上标的事件
+         */
         btnSetSuperscript = (Button) findViewById(R.id.btnSetSuperscript);
         btnSetSuperscript.setOnClickListener(new View.OnClickListener() {
             /**
@@ -120,6 +144,9 @@ public class EditActivity extends Activity {
             }
         });
 
+        /**
+         * 设置下标的事件
+         */
         btnSetSubscript = (Button) findViewById(R.id.btnSetSubscript);
         btnSetSubscript.setOnClickListener(new View.OnClickListener() {
             /**
@@ -133,6 +160,9 @@ public class EditActivity extends Activity {
             }
         });
 
+        /**
+         * 设置粗体的事件
+         */
         btnSetStyleBOLD = (Button) findViewById(R.id.btnSetStyleBOLD);
         btnSetStyleBOLD.setOnClickListener(new View.OnClickListener() {
             /**
@@ -146,6 +176,9 @@ public class EditActivity extends Activity {
             }
         });
 
+        /**
+         * 设置斜体的事件
+         */
         btnSetStyleITALIC = (Button) findViewById(R.id.btnSetStyleITALIC);
         btnSetStyleITALIC.setOnClickListener(new View.OnClickListener() {
             /**
@@ -159,7 +192,9 @@ public class EditActivity extends Activity {
             }
         });
 
-
+        /**
+         * 设置删除线的事件
+         */
         btnSetStrikeThrough = (Button) findViewById(R.id.btnSetStrikeThrough);
         btnSetStrikeThrough.setOnClickListener(new View.OnClickListener() {
             /**
@@ -173,7 +208,9 @@ public class EditActivity extends Activity {
             }
         });
 
-
+        /**
+         * 设置下划线的事件
+         */
         btnSetUnderline = (Button) findViewById(R.id.btnSetUnderline);
         btnSetUnderline.setOnClickListener(new View.OnClickListener() {
             /**
@@ -191,6 +228,9 @@ public class EditActivity extends Activity {
         etFontSize = (EditText) findViewById(R.id.etFontSize);
         etFontSize.setText("1");
 
+        /**
+         * 设置字体大小的事件
+         */
         btnSetFontSize = (Button) findViewById(R.id.btnSetFontSize);
         btnSetFontSize.setOnClickListener(new View.OnClickListener() {
             /**
@@ -202,6 +242,7 @@ public class EditActivity extends Activity {
             public void onClick(View v) {
                 String fontSizeText = etFontSize.getText().toString().trim();
                 float fontSize = 1;
+                //防止文本为空
                 if (fontSizeText.equals("") || fontSizeText == null) {
                     etContent.setText("1");
                     etContent.setFontSize(fontSize);
@@ -279,6 +320,16 @@ public class EditActivity extends Activity {
     }
 
     /**
+     * 在如初的时候讲数据库连接关掉
+     */
+    @Override
+    protected void onDestroy() {
+        writableDatabase.close();
+        readableDatabase.close();
+        super.onDestroy();
+    }
+
+    /**
      * activity的回调判断
      *
      * @param requestCode 回调的代码
@@ -302,6 +353,12 @@ public class EditActivity extends Activity {
         }
     }
 
+    /**
+     * 根据指定的id查找需要的数据
+     *
+     * @param id 要查找的id
+     * @return 找到的数据
+     */
     private NoteInfoBean queryById(String id) {
         NoteInfoBean infoBean = null;
         Cursor query = readableDatabase.query(NoteDB.TABLE_NAME_NOTES, null, NoteDB.COLUM_NAME_NOTES_ID + "=?", new String[]{id}, null, null, null);
@@ -315,6 +372,12 @@ public class EditActivity extends Activity {
         return infoBean;
     }
 
+    /**
+     * 在数据库中新插入一项
+     *
+     * @param noteInfoBean 要插入的项
+     * @return
+     */
     public int insert(NoteInfoBean noteInfoBean) {
 
         ContentValues cv = new ContentValues();
@@ -325,6 +388,12 @@ public class EditActivity extends Activity {
         return (int) writableDatabase.insert(NoteDB.TABLE_NAME_NOTES, "''", cv);
     }
 
+    /**
+     * 将数据库中的一项更新
+     *
+     * @param noteInfoBean 更新的项
+     * @return
+     */
     public int update(NoteInfoBean noteInfoBean) {
 
         ContentValues cv = new ContentValues();

@@ -1,5 +1,6 @@
 package com.chen.app.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -26,7 +27,7 @@ public class NoteDB extends SQLiteOpenHelper {
 
     private static final int version = 1; //数据库版本
 
-        public NoteDB(Context context) {
+    public NoteDB(Context context) {
         //第三个参数CursorFactory指定在执行查询时获得一个游标实例的工厂类,设置为null,代表使用系统默认的工厂类
         super(context, TABLE_NAME_NOTES, null, version);
     }
@@ -39,12 +40,19 @@ public class NoteDB extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TABLE_NAME_NOTES+"(" +
-                COLUM_NAME_NOTES_ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COLUM_NAME_NOTES_TITLE+" TEXT  DEFAULT \"\"," +
-                COLUM_NAME_NOTES_CONTENT+" TEXT  DEFAULT \"\"," +
-                COLUM_NAME_NOTES_DATE+" TEXT DEFAULT \"\"" +
+        db.execSQL("CREATE TABLE " + TABLE_NAME_NOTES + "(" +
+                COLUM_NAME_NOTES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUM_NAME_NOTES_TITLE + " TEXT  DEFAULT \"\"," +
+                COLUM_NAME_NOTES_CONTENT + " TEXT  DEFAULT \"\"," +
+                COLUM_NAME_NOTES_DATE + " TEXT DEFAULT \"\"" +
                 ")");
+
+        ContentValues cv = new ContentValues();
+        cv.put(NoteDB.COLUM_NAME_NOTES_TITLE, "");
+        cv.put(NoteDB.COLUM_NAME_NOTES_CONTENT,"");
+        //new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date())
+        cv.put(NoteDB.COLUM_NAME_NOTES_DATE, "");
+       /* getWritableDatabase().insert(NoteDB.TABLE_NAME_NOTES, "''", cv);*/
     }
 
     /**
