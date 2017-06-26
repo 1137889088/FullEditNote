@@ -1,0 +1,2 @@
+# FullEditNote
+Android基于SpannableString的富文本编辑器
