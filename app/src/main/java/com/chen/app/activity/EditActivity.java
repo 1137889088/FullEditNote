@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
@@ -20,6 +21,7 @@ import com.chen.app.domain.NoteInfoBean;
 import com.chen.app.util.UriUtils;
 import com.chen.app.view.ColorPickerDialog;
 import com.chen.app.view.PictureAndTextEditorView;
+import org.sil.palaso.Graphite;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,11 +63,12 @@ public class EditActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        Graphite.loadGraphite();
         db = new NoteDB(this);
         readableDatabase = db.getReadableDatabase();
         writableDatabase = db.getWritableDatabase();
-        //Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
+        Typeface mtfp = (Typeface) Graphite.addFontResource(getAssets(), "MenkHar_a_NoFtrTig.ttf", "MenkHar", 0, "", "");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         Intent intent = getIntent();
@@ -84,6 +87,7 @@ public class EditActivity extends Activity {
 
         final EditText etTitle = (EditText) findViewById(R.id.etTitle);
         etContent = (PictureAndTextEditorView) findViewById(R.id.etContent);
+        etContent.setTypeface(mtfp);
         //如果从数据库中查到了数据九江数据设置到文本中进行显示
         if (bean != null) {
             etTitle.setText(bean.getNoteTitle());
@@ -263,7 +267,8 @@ public class EditActivity extends Activity {
         });
 
 
-        //etContent.setTypeface(mtfp);
+
+
         //etContent.getTypeface();
         btnAddPic = (Button) findViewById(R.id.btnAddPic);
 
